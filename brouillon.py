@@ -32,19 +32,19 @@ for x in range(taille) :
 
 #boucle principale, pair cellule morte, impair cellule vivante
 
-def main_evaluate(grid, stock) :
-    stock = [[0,0]*taille for _ in range(taille)]
+def main_evaluate(grid) :
+    new_grid = [[0,0]*taille for _ in range(taille)]
     for x in range(taille) :
         for y in range(taille) :
             if grid[x][y] == (5 or 6 or 7) :
-                stock[x][y] += 1 #indique que la cellule était vivante au tour d'avant
-                stock[x-1][y-1] += 2
-                stock[x][y-1] += 2
-                stock[x+1][y-1] += 2
-                stock[x-1][y] += 2
-                stock[x+1][y] += 2
-                stock[x-1][y+1] += 2
-                stock[x][y+1] += 2
-                stock[x+1][y+1] += 2
+                new_grid[x][y] += 1 #indique que la cellule était vivante au tour d'avant
+                new_grid[x-1][y-1] += 2
+                new_grid[x][y-1] += 2
+                new_grid[x+1][y-1] += 2
+                new_grid[x-1][y] += 2
+                new_grid[x+1][y] += 2
+                new_grid[x-1][y+1] += 2
+                new_grid[x][y+1] += 2
+                new_grid[x+1][y+1] += 2
 
-    return stock
+    return new_grid

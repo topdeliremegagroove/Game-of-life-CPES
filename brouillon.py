@@ -7,7 +7,8 @@ print(lines)
 
 root_grid = [[0]*taille for _ in range(taille)]
 for i in range(len(lines)) :
-    root_grid[int(lines[i][0])-1][int(lines[i][1])-1] = 1
+    coords = lines[i].split()
+    root_grid[int(coords[0])][int(coords[1])] = 1
     
 
 first_grid = [[0,0]*taille for _ in range(taille)]

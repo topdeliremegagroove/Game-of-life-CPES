@@ -18,9 +18,9 @@ def change_col(bouton) :        # changement de couleur des boutons
 
 def buttons() :             # implémentation des boutons pour initialiser la grille et les contrôles
 
-    for i in range(8) :
+    for i in range(25) :
         grid_display.append([])
-        for j in range(8) :
+        for j in range(25) :
             grid_display[i].append(Button(root, padx=12, bg="white", activebackground="black"))
             grid_display[i][j].configure(command=partial(change_col, grid_display[i][j]))
             grid_display[i][j].grid(row=i, column=j)
@@ -60,8 +60,8 @@ def sauvegarde() :
         file_name = "Sauvegarde_tmp"
 
     f = open(f"{file_name}.txt", "w")
-    for i in range(8) :
-        for j in range(8) :
+    for i in range(25) :
+        for j in range(25) :
             if grid_display[i][j].cget("bg") == "black" :
                 f.write(f"{i} {j}\n")
     f.close
@@ -82,9 +82,9 @@ def grid_generation() :                 # création de la première grille 0_1
                    
     else :
         grid = []
-        for i in range(8) :
+        for i in range(25) :
             grid.append([])
-            for j in range(8) :
+            for j in range(25) :
                 if grid_display[i][j].cget("bg") == "white" :
                     grid[i].append(0)
                 else :
@@ -94,8 +94,8 @@ def grid_generation() :                 # création de la première grille 0_1
         sauvegarde()
     
     first_grid = [[0]*taille for _ in range(taille)]
-    for x in range(taille) :
-        for y in range(taille) :
+    for x in range(1, taille-1) :
+        for y in range(1, taille-1) :
             if grid[x][y] == 1 :
                 first_grid[x][y] += 1 #indique que la cellule était vivante au tour d'avant
                 first_grid[x-1][y-1] += 2
@@ -108,7 +108,7 @@ def grid_generation() :                 # création de la première grille 0_1
                 first_grid[x+1][y+1] += 2 
 
 #boucle d'initialisation à partir de la grille racine
-    print(first_grid)
+    
 
     generation_plateau(first_grid)
 
@@ -120,8 +120,8 @@ def generation_plateau(grid) :    # destruction des boutons et remplacement par 
     save_button.destroy()
     save_entry.destroy()
 
-    for i in range(8) :
-        for j in range(8) :
+    for i in range(25) :
+        for j in range(25) :
             grid_display[i][j].destroy()
 
     for i in range(len(grid)) :
@@ -175,11 +175,10 @@ def update(grid) :          # fonction d'actualisation des Labels à partir d'un
 
 def main_evaluate(grid) :
     stock = [[0]*len(grid) for _ in range(len(grid))]
-    for x in range(len(grid)) :
-        for y in range(len(grid)) :
-            if (grid[x][y] % 2 == 1) or (grid[x][y] == 6) :
-                
-                stock[x][y] += 1 #indique que la cellule était vivante au tour d'avant
+    for x in range(1, len(grid)-1) :
+        for y in range(1, len(grid)-1) :
+            if grid[x][y] in [5, 6, 7] :
+                stock[x][y] += 1 #indique que la cellule était vivante au tour suivant
                 stock[x-1][y-1] += 2
                 stock[x][y-1] += 2
                 stock[x+1][y-1] += 2
@@ -188,7 +187,7 @@ def main_evaluate(grid) :
                 stock[x-1][y+1] += 2
                 stock[x][y+1] += 2
                 stock[x+1][y+1] += 2
-    print(stock)
+
     return stock
 
 
@@ -202,55 +201,11 @@ def resume(grid) :
     update(grid)
 
 
-
-
-# def voisines(i,j, grid) :
-#     nb = 0
-#     for k in [-1,0,1] :
-#         for l in [-1,0,1] :
-#             nb += grid[i+k][j+l]
-#     nb -= grid[i][j]
-#     return nb
-#
-# def next(grid):
-#     new = [[0 for _ in range(len(grid))] for _ in range(len(grid))]
-#     for i in range(1, len(grid)-1) :
-#         for j in range(1, len(grid)-1) :
-#             if grid[i][j] == 0 :
-#                 if voisines(i,j, grid) == 3 :
-#                     new[i][j] = 1
-#             if grid[i][j] == 1 :
-#                 if voisines(i,j, grid) == 2 or voisines(i,j, grid) == 3 :
-#                     new[i][j] = 1
-#     return new
-
-
-
-
 grid_display = []
-taille = 8
-
+taille = 25
 buttons()
 
 
-# generation([[0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 0, 1, 0, 0, 0, 0],
-#             [0, 0, 1, 1, 1, 1, 0, 0],
-#             [0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 0, 0, 0, 0, 0, 0],
-#             [0, 0, 0, 0, 0, 0, 0, 0]])
-#
-#
-# update([[0, 0, 0, 0, 0, 0, 0, 0],
-#         [0, 0, 0, 0, 0, 0, 0, 0],
-#         [0, 0, 0, 0, 0, 0, 0, 0],
-#         [0, 0, 1, 1, 0, 0, 0, 0],
-#         [0, 0, 1, 1, 1, 0, 0, 0],
-#         [0, 0, 0, 1, 1, 0, 0, 0],
-#         [0, 0, 0, 0, 0, 0, 0, 0],
-#         [0, 0, 0, 0, 0, 0, 0, 0]])
 
 
 root.mainloop()

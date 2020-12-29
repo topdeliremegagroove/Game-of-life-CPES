@@ -96,7 +96,7 @@ def grid_generation() :                 # création de la première grille 0_1
     first_grid = [[0,0]*taille for _ in range(taille)]
     for x in range(taille) :
         for y in range(taille) :
-            if root_grid[x][y] == 1 :
+            if grid[x][y] == 1 :
                 first_grid[x][y] += 1 #indique que la cellule était vivante au tour d'avant
                 first_grid[x-1][y-1] += 2
                 first_grid[x][y-1] += 2

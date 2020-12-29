@@ -1,12 +1,21 @@
+
+
 class plateau():
 
     def __init__(self, fichier = None):
+        #lecture du fichier de l'état initial dans plateau racine
         file = open("fichier.txt", "r")
-        plateau_racine = []
-        line = file.readline()
-        for line in file :
-            lignes[1] =
-        mon_fichier.close()
+
+        lines = file.readlines()
+        file.close()
+        plateau_racine = [[] for _ in range(len(lines))]
+        for i in range(len(lines)) :
+            for ch in lines[i][:-1] :
+                plateau_racine[i].append(ch)
+
+        
+
+
 
 
 

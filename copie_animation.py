@@ -18,9 +18,9 @@ def change_col(bouton) :        # changement de couleur des boutons
 
 def buttons() :             # implémentation des boutons pour initialiser la grille et les contrôles
 
-    for i in range(25) :
+    for i in range(8) :
         grid_display.append([])
-        for j in range(25) :
+        for j in range(8) :
             grid_display[i].append(Button(root, padx=12, bg="white", activebackground="black"))
             grid_display[i][j].configure(command=partial(change_col, grid_display[i][j]))
             grid_display[i][j].grid(row=i, column=j)
@@ -60,8 +60,8 @@ def sauvegarde() :
         file_name = "Sauvegarde_tmp"
 
     f = open(f"{file_name}.txt", "w")
-    for i in range(25) :
-        for j in range(25) :
+    for i in range(8) :
+        for j in range(8) :
             if grid_display[i][j].cget("bg") == "black" :
                 f.write(f"{i} {j}\n")
     f.close
@@ -69,8 +69,8 @@ def sauvegarde() :
 
 
 def grid_generation() :                 # création de la première grille 0_1
+    
     if entry_file.get() != "" :
-        taille = 25
         file = open(f"{entry_file.get()}.txt", "r")
         lines = file.readlines()
         file.close()
@@ -82,9 +82,9 @@ def grid_generation() :                 # création de la première grille 0_1
                    
     else :
         grid = []
-        for i in range(25) :
+        for i in range(8) :
             grid.append([])
-            for j in range(25) :
+            for j in range(8) :
                 if grid_display[i][j].cget("bg") == "white" :
                     grid[i].append(0)
                 else :
@@ -92,8 +92,8 @@ def grid_generation() :                 # création de la première grille 0_1
 
         # Sauvegarde automatique de la position de départ
         sauvegarde()
-
-    first_grid = [[0,0]*taille for _ in range(taille)]
+    
+    first_grid = [[0]*taille for _ in range(taille)]
     for x in range(taille) :
         for y in range(taille) :
             if grid[x][y] == 1 :
@@ -108,9 +108,9 @@ def grid_generation() :                 # création de la première grille 0_1
                 first_grid[x+1][y+1] += 2 
 
 #boucle d'initialisation à partir de la grille racine
-    
+    print(first_grid)
 
-    generation_plateau(grid)
+    generation_plateau(first_grid)
 
 
 def generation_plateau(grid) :    # destruction des boutons et remplacement par des Labels à partir de la grille 0_1
@@ -120,8 +120,8 @@ def generation_plateau(grid) :    # destruction des boutons et remplacement par 
     save_button.destroy()
     save_entry.destroy()
 
-    for i in range(25) :
-        for j in range(25) :
+    for i in range(8) :
+        for j in range(8) :
             grid_display[i][j].destroy()
 
     for i in range(len(grid)) :
@@ -150,7 +150,7 @@ def update(grid) :          # fonction d'actualisation des Labels à partir d'un
     step_label.configure(text=f"Step {step}")
 
     for i in range(len(grid)) :
-        for j in range(len(grid[0])) :
+        for j in range(len(grid)) :
 
             if grid[i][j] % 2 == 0 :
                 color = "white"
@@ -174,10 +174,11 @@ def update(grid) :          # fonction d'actualisation des Labels à partir d'un
 
 
 def main_evaluate(grid) :
-    stock = [[0,0]*taille for _ in range(taille)]
-    for x in range(taille) :
-        for y in range(taille) :
-            if grid[x][y] == (5 or 6 or 7) :
+    stock = [[0]*len(grid) for _ in range(len(grid))]
+    for x in range(len(grid)) :
+        for y in range(len(grid)) :
+            if (grid[x][y] % 2 == 1) or (grid[x][y] == 6) :
+                
                 stock[x][y] += 1 #indique que la cellule était vivante au tour d'avant
                 stock[x-1][y-1] += 2
                 stock[x][y-1] += 2
@@ -187,7 +188,7 @@ def main_evaluate(grid) :
                 stock[x-1][y+1] += 2
                 stock[x][y+1] += 2
                 stock[x+1][y+1] += 2
-
+    print(stock)
     return stock
 
 
@@ -227,6 +228,7 @@ def resume(grid) :
 
 
 grid_display = []
+taille = 8
 
 buttons()
 
@@ -249,3 +251,6 @@ buttons()
 #         [0, 0, 0, 1, 1, 0, 0, 0],
 #         [0, 0, 0, 0, 0, 0, 0, 0],
 #         [0, 0, 0, 0, 0, 0, 0, 0]])
+
+
+root.mainloop()

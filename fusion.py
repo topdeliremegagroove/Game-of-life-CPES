@@ -1,100 +1,129 @@
 from tkinter import *
 from functools import partial
-from time import sleep
 
 root = Tk()
 root.title("Le Jeu de la Vie")
-# root.iconbitmap("logo.ico")
+root.iconbitmap("logo.ico")
 
-'''' A faire : changer la taille de la grille ;
-                détecter la taille du fichier lu (ou en faire une par défaut, et dans ce cas, centrer les coordonnées) ;
-                bouton de réinitialisation
+'''' A faire : détecter la taille du fichier lu (ou en faire une par défaut, et dans ce cas, centrer les coordonnées) ;
 '''
 
-taille = 25
-pixel = 1000
 
 
-
-def change_col(coord, _) :        # changement de couleur des boutons
-    i,j = coord
+def change_color(coords, _) :        # changement de couleur des boutons
+    i, j = coords
     if c.itemcget(grid_display[i][j], "fill") == "white" :
         c.itemconfig(grid_display[i][j], fill="black")
     else :
         c.itemconfig(grid_display[i][j], fill="white")
 
-# def new_size() :
-#     if not isinstance(taille_entry,int):
-#         pass
-#     new_taille = taille_entry.cget()
-
 
 def initialisation() :             # implémentation des boutons pour initialiser la grille et les contrôles
 
     global c, grid_display
-    c = Canvas(root, height = pixel, width = pixel, bg="grey")
+
+    height = width = 900
+    c = Canvas(root, height = height, width = width, bd=0, bg = "grey")
     c.grid(row=0, column=0, rowspan = 30)
-    side = pixel/taille
+
+    cell_side = height/size
 
     grid_display = []
 
 
-    for i in range(taille) :
+    for i in range(size) :
         grid_display.append([])
-        for j in range(taille) :
+        for j in range(size) :
 
-            grid_display[i].append(c.create_rectangle(side*j, side*i, side*(j+1), side*(i+1), width=2, fill="white", tags=f"{i}_{j}"))
+            grid_display[i].append(c.create_rectangle(cell_side*j, cell_side*i, cell_side*(j+1), cell_side*(i+1), width = 2, fill="white", tags=f"{i}_{j}"))
 
-            c.tag_bind(f"{i}_{j}","<Button-1>", partial(change_col, (i,j)))
+            c.tag_bind(f"{i}_{j}","<Button-1>", partial(change_color, (i, j) ))
 
 
 
-    global entry_file, launch_button, speed_scale, step, step_label, save_button, save_entry, taille_entry, taille_button
+    global welcome_label, speed_scale, step, step_label, reset_button
 
-    # Texte :
+    # Boutons permanents :
+
+    # Texte de présentation :
     welcome_label = Label(text="Bienvenue dans le Jeu de la Vie !")
-    welcome_label.grid(row=3, column=2)
+    welcome_label.grid(row=3, column=2, columnspan=7)
 
-    # Entrée du fichier d'initialistion 4
-    entry_file = Entry(root, width = 30)
-    entry_file.grid(row=4, column=2)
-
-    # Bouton de départ
-    launch_button = Button(root, command=grid_generation, text="  Go !  ")
-    launch_button.grid(row=5, column=2)
-
-    # Curseur de la vitesse
+    # Curseur de la vitesse :
     speed_scale = Scale(root, orient="horizontal", from_ = 0, to = 16, resolution=0.1, tickinterval=2, label="Speed (steps/sec)", length = 330)
     speed_scale.set(2)
-    speed_scale.grid(row=7, column=2, rowspan=4)
+    speed_scale.grid(row=11, column=2, rowspan=4, columnspan=7)
 
-    # Affichage de l'étape actuelle
+    # Affichage de l'étape actuelle :
     step = 0
     step_label = Label(root, text=f"Step {step}")
-    step_label.grid(row=11, column=2)
+    step_label.grid(row=15, column=2, columnspan=7)
 
-    # Bouton pour sauvegarder l'affichage actuel
-    save_button = Button(root, command=sauvegarde, text="Save the grid")
-    save_button.grid(row=15, column=2)
-    # Et une boîte d'entrée pour le nom du fichier
-    save_entry = Entry(root, width=30)
-    save_entry.grid(row=14, column=2)
+    # le bouton reset permet de revenir à la grille vierge à tout moment :
+    reset_button = Button(root, command=reset, text="  Reset  ")
+    reset_button.grid(row=20, column=5)
 
 
+    # Boutons d'initialisation (stockés dans un dictionnaire pour pouvoir être détruits plus facilement) :
 
-    # #Boite d'entrée pour la taille du fichier
-    # taille_entry=Entry(root,width=7)
-    # taille_entry.grid(row=12, column=2)
-    #
-    # #Boutton pour modifier la taille du quadrillage
-    # taille_button = Button(root, text= "Changer la taille", command=new_size)
-    # taille_button.grid(row=13, column=2)
+    global dico
+    dico = {}
 
+    # Entrée du fichier d'initialistion :
+    dico["file_entry"] = Entry(root, width = 30)
+    dico["file_entry"].grid(row=5, column=2, columnspan=7)
+
+    # Bouton de départ :
+    dico["launch_button"] = Button(root, command=grid_generation, text="  Go !  ")
+    dico["launch_button"].grid(row=6, column=2, columnspan=7)
+
+
+    # Bouton pour sauvegarder l'affichage actuel :
+    dico["save_button"] = Button(root, command=sauvegarde, text="Save the grid")
+    dico["save_button"].grid(row=27, column=2, columnspan=7)
+    # Et une boîte d'entrée pour le nom du fichier (si l'entrée est vide, sauvegarde au nom 'Sauvegarde_tmp') :
+    dico["save_entry"] = Entry(root, width=30)
+    dico["save_entry"].grid(row=26, column=2, columnspan=7)
+
+
+    # Label pour modifier la taille du quadrillage
+    dico["size_label"] = Label(root, text = f"  Changer la taille ({size}) :  ")
+    dico["size_label"].grid(row=18, column=2, columnspan=7)
+
+    # Entrée pour modifier manuellement la taille :
+    dico["size_entry"] = Entry(root, width=7)
+    dico["size_entry"].grid(row=19, column=5)
+
+    dico["size_increment1"] = Button(root, text="+1", command=partial(reset, 1))
+    dico["size_increment1"].grid(row=19, column=6)
+
+    dico["size_increment2"] = Button(root, text="+2", command=partial(reset, 2))
+    dico["size_increment2"].grid(row=19, column=7)
+
+    dico["size_increment4"] = Button(root, text="+4", command=partial(reset, 4))
+    dico["size_increment4"].grid(row=19, column=8)
+
+
+    dico["size_decrement1"] = Button(root, text="-1", command=partial(reset, -1))
+    dico["size_decrement1"].grid(row=19, column=4)
+
+    dico["size_decrement2"] = Button(root, text="-2", command=partial(reset, -2))
+    dico["size_decrement2"].grid(row=19, column=3)
+
+    dico["size_decrement4"] = Button(root, text="-4", command=partial(reset, -3))
+    dico["size_decrement4"].grid(row=19, column=2)
+
+    if size < 9 :
+        dico["size_decrement4"].configure(state=DISABLED)
+        if size < 7 :
+            dico["size_decrement2"].configure(state=DISABLED)
+            if size < 6 :
+                dico["size_decrement1"].configure(state=DISABLED)
 
 
 
 def sauvegarde() :
-    file_name = save_entry.get()
+    file_name = dico["save_entry"].get()
     if file_name == "" :
         file_name = "Sauvegarde_tmp"
 
@@ -107,14 +136,15 @@ def sauvegarde() :
 
 
 
-def grid_generation() :                 # création de la première grille 0_1
+def grid_generation() :                 # création de la première grille 0_1, puis traduction en 0-15
 
-    for i in range(len(grid_display)) :         # désactivation des cases
+    for i in range(len(grid_display)) :         # désactivation des cases en enlevant les tags
         for j in range(len(grid_display)) :
             c.dtag(grid_display[i][j], f"{i}_{j}")
 
-    if entry_file.get() != "" :
-        file = open(f"{entry_file.get()}.txt", "r")
+    taille = size
+    if dico["file_entry"].get() != "" :
+        file = open(f"{dico['file_entry'].get()}.txt", "r")
         lines = file.readlines()
         file.close()
 
@@ -136,9 +166,9 @@ def grid_generation() :                 # création de la première grille 0_1
         # Sauvegarde automatique de la position de départ
         sauvegarde()
 
-    first_grid = [[0]*taille for _ in range(taille)]
-    for x in range(1, taille-1) :
-        for y in range(1, taille-1) :
+    first_grid = [[0]*len(grid) for _ in range(len(grid))]
+    for x in range(1, len(grid)-1) :
+        for y in range(1, len(grid) - 1) :
             if grid[x][y] == 1 :
                 first_grid[x][y] += 1 #indique que la cellule était vivante au tour d'avant
                 first_grid[x-1][y-1] += 2
@@ -150,26 +180,20 @@ def grid_generation() :                 # création de la première grille 0_1
                 first_grid[x][y+1] += 2
                 first_grid[x+1][y+1] += 2
 
-    #boucle d'initialisation à partir de la grille racine
-    entry_file.destroy()
-    launch_button.destroy()
-    save_button.destroy()
-    save_entry.destroy()
-
+    # Suppression des widget d'initialisation :
+    for widget in dico.values() :
+        widget.destroy()
 
     global pause_button, step
     # Bouton de pause
-    pause_button = Button(root, text="Pause", command=lambda : speed_scale.set(0)) # Le curseur mis à 0 arrête la boucle du update
-    pause_button.grid(row=0, column = 2)
+    pause_button = Button(root, text="  Pause  ", command=lambda : speed_scale.set(0)) # Le curseur mis à 0 arrête la boucle du update
+    pause_button.grid(row=6, column=2, rowspan=2, columnspan=7)
 
 
-    global reset_button, reset_state
-    reset_button = Button(root, command=reset, text="Reset") #le bouton reset permet de revenir à la grille vierge à tout moment
-    reset_button.grid(row=16, column=2)
-
+    global reset_state
     reset_state = False
 
-    step=-1
+    step =- 1
     update(first_grid)
 
 
@@ -231,7 +255,7 @@ def pause(grid) :
 
     global step_button
     step_button = Button(root, text="Next step", command=partial(update_step_by_step, grid))
-    step_button.grid(row=5, column=2)
+    step_button.grid(row=9, column=2, rowspan=2, columnspan=7)
 
 
 def resume(grid) :
@@ -274,25 +298,27 @@ def update_step_by_step(grid) :
 
 
 
-def reset() :
-    global reset_state
+def reset(x = 0) :
+
+    global size, reset_state
+    if reset_state == True :
+        if dico["size_entry"].get() != "" :
+            size = int(dico["size_entry"].get())
+    if size < 5 :
+        size = 5
+    size += x
+
     reset_state = True
 
-    c.destroy()
-    speed_scale.destroy()
-    if pause_button.cget("text") == "Resume" :
-        step_button.destroy()
-    pause_button.destroy()
-    reset_button.destroy()
-    step_label.destroy()
-
+    for widget in root.winfo_children() :
+        widget.destroy()
 
     initialisation()
 
 
 
 
-
+size = 30
 initialisation()
 
 

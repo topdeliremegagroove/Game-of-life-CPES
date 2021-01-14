@@ -50,7 +50,7 @@ def initialisation() :           # Implémentation du Canvas contenant les cellu
     global welcome_label, speed_scale, step, step_label, reset_button, reset_state
 
     # Texte de présentation :
-    welcome_label = Label(text="Bienvenue dans le Jeu de la Vie !")
+    welcome_label = Label(text="Welcome in the Game of Life!")
     welcome_label.grid(row=3, column=2, columnspan=7)
 
     # Curseur de vitesse :
@@ -92,7 +92,7 @@ def initialisation() :           # Implémentation du Canvas contenant les cellu
 
 
     # Label de modification de la taille de la grille :
-    dico["size_label"] = Label(root, text = f"  Changer la taille ({size}) :  ")
+    dico["size_label"] = Label(root, text = f"  Change size ({size}) :  ")
     dico["size_label"].grid(row=18, column=2, columnspan=7)
 
     # Entrée pour modifier manuellement la taille :

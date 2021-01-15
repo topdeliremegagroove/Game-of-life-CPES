@@ -17,7 +17,7 @@ Le bouton "Pause" permet de stopper momentanément le jeu.
 Lors de la pause, il est possible d'avancer étape par étape avec le bouton "Next Step", ou bien de reprendre l'avancée automatique avec le bouton "Resume".
 
 Nous avons décidé d'ajouter des contrôles supplémentaires afin de rentre le jeu plus agréable :
-- Il est possible de changer la taille de la grille avec les boutons allant de -4 à +4 ; ou bien en entrant un entier dans la boîte de dialogue située entre ces boutons, puis en apuyant sur "Reset". Pour des raisons d'utilité, une taille minimale de 5 cellule de côté est automatiquement affichée ;
+- Il est possible de changer la taille de la grille avec les boutons allant de -4 à +4 ; ou bien en entrant un entier dans la boîte de dialogue située entre ces boutons, puis en appuyant sur "Reset". Pour des raisons d'utilité, une taille minimale de 5 cellules de côté est automatiquement affichée ;
 - Le bouton "Reset" permet de réinitialiser la grille à l'état vierge à tout moment ;
 - Une sauvegarde des coordonnées de l'état initial de la grille est automatiquement effectuée dans le working directory sous le nom "Sauvegarde_tmp.txt", et ce à chaque fois que le programme est lancé à partir d'un motif manuel.
 Il est possible de personnaliser le nom du fichier en entrant le nom désiré dans la boîte de dialogue en bas (sans le .txt). 

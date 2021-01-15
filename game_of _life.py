@@ -29,6 +29,7 @@ def initialisation() :           # Implémentation du Canvas contenant les cellu
     c = Canvas(root, height = height, width = width, bd=0, bg = "grey")
     c.grid(row=0, column=0, rowspan = 30)
 
+    # Taille d'une cellule (en pixel) :
     cell_side = height/size
 
     # Liste contenant les cellules :
